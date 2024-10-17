@@ -35,3 +35,4 @@ game/<gameId>
 
 ~ Format
 * action - [UPDATE, RESIGN , CLAIM_VICTORY, MESSAGE]
+* 

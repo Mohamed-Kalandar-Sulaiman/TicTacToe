@@ -1,26 +1,40 @@
 from src.database import RedisRepository
 from models.game import Game
-
+import asyncio
 
 class GameRepo:
     def __init__(self):
-        self.redis = RedisRepository(cluster_name="GAME")
-    
-    def create_game(self, **kwargs):
+        self.redis_repo = RedisRepository(cluster_name="GAME")
+        
+    async def subscribe_to_game(self, gameId: str):
+        """Subscribe to a Redis Pub/Sub channel for a specific game asynchronously."""
+        pubsub = self.redis.pubsub()
+        await pubsub.subscribe(f"GAME:{gameId}")
+        return pubsub
+
+
+    async def publish_to_game(self, gameId: str, message: str):
+        """Publish a message to the game's Redis channel asynchronously."""
+        await self.redis.publish(f"GAME:{gameId}", message)
+
+
+    async def create_game(self, **kwargs):
         """Create a new game and store it in Redis."""
         newgame = Game(**kwargs)
         key = f"GAME:{newgame.gameId}"
+        await self.redis_repo.connect()  # Ensure connection to Redis
         try:
-            self.redis.redis.json().set(key, "$", newgame.__dict__)
+            await self.redis_repo.redis.json().set(key, "$", newgame.__dict__)
             return f"Game {newgame.gameId} created successfully"
         except Exception as e:
             return str(e)
 
-    def get_game(self, gameId: str):
+    async def get_game(self, gameId: str):
         """Retrieve a game by its ID from Redis."""
         key = f"GAME:{gameId}"
+        await self.redis_repo.connect()
         try:
-            game_data = self.redis.redis.json().get(key)
+            game_data = await self.redis_repo.redis.json().get(key)
             if game_data:
                 return Game(**game_data)
             else:
@@ -28,24 +42,26 @@ class GameRepo:
         except Exception as e:
             return str(e)
 
-    def update_game(self, gameId: str, update_data: dict):
+    async def update_game(self, gameId: str, update_data: dict):
         """Update a game in Redis with new data."""
         key = f"GAME:{gameId}"
+        await self.redis_repo.connect()
         try:
             # Perform partial updates on the JSON object
             for field, value in update_data.items():
                 path = f"$.{field}"
-                self.redis.redis.json().set(key, path, value)
+                await self.redis_repo.redis.json().set(key, path, value)
 
             return f"Game {gameId} updated successfully"
         except Exception as e:
             return str(e)
 
-    def delete_game(self, gameId: str):
+    async def delete_game(self, gameId: str):
         """Delete a game from Redis."""
         key = f"GAME:{gameId}"
+        await self.redis_repo.connect()
         try:
-            result = self.redis.redis.delete(key)
+            result = await self.redis_repo.redis.delete(key)
             if result == 1:
                 return f"Game {gameId} deleted successfully"
             else:

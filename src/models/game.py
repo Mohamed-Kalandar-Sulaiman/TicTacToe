@@ -5,6 +5,7 @@ class Game:
     gameId : str
     players :list
     currentPlayerToMove:str
+    currentShape:str = "X"
     isGameOver : bool = False
     winner : str = None
     makeMoveBefore: int
