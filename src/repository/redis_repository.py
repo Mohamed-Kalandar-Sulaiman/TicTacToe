@@ -17,7 +17,6 @@ class RedisRepository:
             self.startup_nodes = [
                 (os.getenv(f"{cluster_name}_REDIS_NODE_1", "localhost"), 6379),
                 (os.getenv(f"{cluster_name}_REDIS_NODE_2", "localhost"), 6379),
-                
             ]
 
     async def connect(self):

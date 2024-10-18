@@ -26,13 +26,26 @@
     * Send and Recive messages
 
 
-REST Endpoints:
-arena/join-a-game
-areana/game/<gameId>
+### **REST Endpoints:**
+1. arena/lobby
+2. arena/game/<gameId>
 
-WS Endpoints:
+
+
+### **WS Endpoints:**
 game/<gameId>
+Only for delta changes
 
 ~ Format
-* action - [UPDATE, RESIGN , CLAIM_VICTORY, MESSAGE]
+* action - [UPDATE_GAME_STATE, RESIGN
+ , CLAIM_VICTORY, MESSAGE]
 * 
+
+### User Flow
+1. User Logins
+    > /home login button
+2. User clicks on ENTER ARENA 
+    > api/v1/arena/lobby is invoked
+    > User is autheticated and put on queue for matchmaking
+    > gameId is returned as reponse
+3. User is redirected

@@ -1,10 +1,11 @@
-from src.database import RedisRepository
-from models.game import Game
+from src.repository import RedisRepository
+from src.models.game import Game
 import asyncio
 
-class GameRepo:
+class GameDAO:
     def __init__(self):
         self.redis_repo = RedisRepository(cluster_name="GAME")
+        
         
     async def subscribe_to_game(self, gameId: str):
         """Subscribe to a Redis Pub/Sub channel for a specific game asynchronously."""
@@ -13,9 +14,11 @@ class GameRepo:
         return pubsub
 
 
+
     async def publish_to_game(self, gameId: str, message: str):
         """Publish a message to the game's Redis channel asynchronously."""
         await self.redis.publish(f"GAME:{gameId}", message)
+
 
 
     async def create_game(self, **kwargs):
@@ -27,9 +30,11 @@ class GameRepo:
             await self.redis_repo.redis.json().set(key, "$", newgame.__dict__)
             return f"Game {newgame.gameId} created successfully"
         except Exception as e:
-            return str(e)
+            raise str(e)
 
-    async def get_game(self, gameId: str):
+
+
+    async def get_game(self, gameId: str)-> Game:
         """Retrieve a game by its ID from Redis."""
         key = f"GAME:{gameId}"
         await self.redis_repo.connect()
@@ -40,7 +45,9 @@ class GameRepo:
             else:
                 return f"Game {gameId} not found."
         except Exception as e:
-            return str(e)
+            raise str(e)
+
+
 
     async def update_game(self, gameId: str, update_data: dict):
         """Update a game in Redis with new data."""
@@ -54,7 +61,9 @@ class GameRepo:
 
             return f"Game {gameId} updated successfully"
         except Exception as e:
-            return str(e)
+            raise str(e)
+
+
 
     async def delete_game(self, gameId: str):
         """Delete a game from Redis."""
@@ -65,6 +74,6 @@ class GameRepo:
             if result == 1:
                 return f"Game {gameId} deleted successfully"
             else:
-                return f"Game {gameId} not found."
+                raise f"Game {gameId} not found."
         except Exception as e:
-            return str(e)
+            raise str(e)

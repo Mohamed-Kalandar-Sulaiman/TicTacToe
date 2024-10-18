@@ -1,1 +1,2 @@
-from .game_repository import GameRepo
+from .redis_repository import RedisRepository
+

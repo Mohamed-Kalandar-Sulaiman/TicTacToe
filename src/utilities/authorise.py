@@ -1,0 +1,4 @@
+
+
+def authenticateJWT():
+    return True
