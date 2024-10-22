@@ -2,7 +2,7 @@
 
 # Variables
 WORKERS=1                # Number of worker processes
-PORT=8000                # Port on which the app will run
+PORT=80                # Port on which the app will run
 HOST=0.0.0.0             # Host to bind
 
 # Start the FastAPI application with uvicorn

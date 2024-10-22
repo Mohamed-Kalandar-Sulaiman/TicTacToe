@@ -37,8 +37,7 @@ game/<gameId>
 Only for delta changes
 
 ~ Format
-* action - [UPDATE_GAME_STATE, RESIGN
- , CLAIM_VICTORY, MESSAGE]
+* action - [UPDATE_GAME_STATE, RESIGN , CLAIM_VICTORY, MESSAGE]
 * 
 
 ### User Flow
@@ -49,3 +48,7 @@ Only for delta changes
     > User is autheticated and put on queue for matchmaking
     > gameId is returned as reponse
 3. User is redirected
+
+
+
+
