@@ -42,13 +42,13 @@ class GameDAO:
     async def get_game(self, gameId: str)-> Game:
         """Retrieve a game by its ID from Redis."""
         key = f"GAME:{gameId}"
-        redis = self.redis_repo.redis
+        await self.redis_repo.connect()
         try:
-            game_data = await redis.json().get(key)
+            game_data = await self.redis_repo.redis.json().get(key)
             if game_data:
                 return Game(**game_data)
             else:
-                raise ValueError(f"Game {gameId} not found.")
+                raise ValueError(f"GAME_NOT_FOUND")
         except RedisError as e:
             print(f"Error retrieving game {gameId}: {e}")
             raise
